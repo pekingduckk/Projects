@@ -1,0 +1,38 @@
+#include <Servo.h> 
+Servo myServo;
+int button = 2;
+int green = 9;
+int red = 10;
+int count = 3; // This is how many candies are in the dispenser to start
+
+void setup(){ 
+  myServo.attach(5);
+  pinMode(button, INPUT);
+  myServo.write(0); // Set the servo to a position of 0 to start
+}
+
+void flap(){
+    myServo.write(90);
+    count = count - 1;
+    
+    digitalWrite(green,HIGH);
+    delay(250);
+    digitalWrite(green,LOW);
+    delay(250);
+    digitalWrite(green,HIGH);
+    delay(250);
+    digitalWrite(green,LOW);
+    delay(250);
+    
+    myServo.write(0);
+    
+}
+void loop(){
+    if(count==0){
+        digitalWrite(red,HIGH);
+    } else if(digitalRead(button)==HIGH){
+        flap();
+    } else{
+        digitalWrite(red,LOW);
+    }
+}

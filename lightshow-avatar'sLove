@@ -1,0 +1,79 @@
+int LED1 = 13;
+int LED2 = 12;
+int LED3 = 11;
+int LED4 = 10;
+int LED5 = 9;
+int LED6 = 8;
+int LED7 = 7;
+int LED8 = 6;
+int LED9 = 5;
+int LED10 = 4;
+int LED11 = 3;
+
+int i = 50;
+void setup(){
+    pinMode(LED1, OUTPUT);
+  	pinMode(LED2, OUTPUT);
+  	pinMode(LED3, OUTPUT);
+  	pinMode(LED4, OUTPUT);
+  	pinMode(LED5, OUTPUT);
+  	pinMode(LED6, OUTPUT);
+  	pinMode(LED7, OUTPUT);
+  	pinMode(LED8, OUTPUT);
+  	pinMode(LED9, OUTPUT);
+  	pinMode(LED10, OUTPUT);
+  	pinMode(LED11, OUTPUT);
+  
+  
+   // ACT 1
+  delay(950); // 0.95 start p1
+  note(LED6);  
+  delay(250);
+  note(LED7); 
+  delay(700);
+  note(LED8);
+  note(LED9);
+  
+  delay(2150);
+  
+  note(LED5); // 
+  delay(250);
+  note(LED4); 
+  delay(700);
+  note(LED3);
+  note(LED2); // 6.25 end p2
+  
+  delay(2200); 
+  
+  note(LED7); // 8.47 start p3
+  delay(250);
+  note(LED8); 
+  delay(700);
+  note(LED9);
+  note(LED10); // 10. end p3
+  
+  // ACT 2
+  delay(1980); 
+  
+  note(LED4); // 12.3 start p4
+  delay(200);
+  note(LED3);
+  delay(760);
+  note(LED10);
+  note(LED11);
+  delay(650);
+  note(LED1);
+}
+
+void note(int led){
+ digitalWrite(led, HIGH);
+ delay(150);
+ digitalWrite(led, LOW);
+ delay(50);
+  
+}
+
+void loop(){
+ 
+    
+}

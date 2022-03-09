@@ -1,0 +1,47 @@
+var totalReminders = [];
+var newRem = "";
+var counterIndex = 0;
+var currentCount = 0;
+
+setText("reminderOutput", "Add reminders!");
+
+
+onEvent("addButton", "click", function( ) {
+  newRem = getText("reminderInput");
+  appendItem(totalReminders, newRem);
+  setText("reminderInput", "");
+  
+  currentCount = currentCount + 1;
+  setText("countOutput", counterIndex + 1);
+  
+
+  update();
+});
+
+// RIGHT BUTTON
+onEvent("rightButton", "click", function( ) {
+  if (counterIndex < totalReminders.length-1) {
+    counterIndex = counterIndex + 1;
+    setText("countOutput", counterIndex + 1);
+  update();
+  
+}});
+
+// LEFT BUTTON
+onEvent("leftButton", "click", function( ) {
+  if (counterIndex > 0){
+    counterIndex = counterIndex - 1;
+    setText("countOutput", counterIndex + 1);
+  update();
+  
+}});
+
+function update() {
+  var currentRem = totalReminders[counterIndex];
+  setProperty("reminderOutput","text", currentRem);
+}
+
+
+
+
+

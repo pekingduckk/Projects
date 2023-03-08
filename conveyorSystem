@@ -1,0 +1,44 @@
+#include "vex.h"
+
+using namespace vex;
+
+double Magnet5_duration = 500.0;
+float myVariable;
+
+// "when started" hat block
+int whenStarted1() {
+  RoboticArm1.setMasteringValues(1730.0,1929.0,1807.0,536.0);
+  RoboticArm1.setToolTipOffset(-0.7, 0.0, -2.0);
+  Magnet5_duration = 500;
+  Magnet5.setPower(100.0);
+  Entry.setVelocity(70.0, percent);
+  Transport.setVelocity(15.0, percent);
+  Exit.setVelocity(50.0, percent);
+  Diverter.setVelocity(30.0, percent);
+  //spin entry forward, load red disk
+  Entry.spin(forward);
+  wait(2.0, seconds);
+  Entry.stop();
+  //spin diverter to postion
+  Diverter.spinToPosition(90, degrees);
+  //spin transport conveyor
+  Transport.spin(forward);
+  wait(5, seconds);
+  //spin exit conveyor
+  Exit.spin(reverse);
+  wait(0.5, seconds);
+  Transport.stop();
+  wait(1.5, seconds);
+  Exit.stop();
+  wait(2, seconds);
+  Diverter.spinToPosition(0, degrees);
+  Transport.spin(forward);
+  wait(3, seconds);
+  Transport.stop();
+  return 0;
+}
+
+
+int main() {
+  whenStarted1();
+}

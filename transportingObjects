@@ -1,0 +1,74 @@
+#include "vex.h"
+
+using namespace vex;
+
+double Magnet5_duration = 500.0;
+float myVariable;
+
+event message1 = event();
+
+// "when started" hat block
+int whenStarted1() {
+  RoboticArm1.setMasteringValues(1754, 1973, 1797, 530);
+  RoboticArm1.setToolTipOffset(-0.7, 0.0, -2.0);
+  Magnet5.setPower(100.0);
+  Magnet5_duration = 1000;
+  Optical6.setLightPower(100.0, percent);
+  return 0;
+}
+
+// "when EStop pressed" hat block
+void onevent_EStop_pressed_0() {
+  RoboticArm1.emergencyStop();
+}
+
+// "when Brain screen pressed" hat block
+void onevent_Brain_screen_pressed_0() {
+  // Pick Up Location
+  wait(1.0, seconds);
+  RoboticArm1.moveToPositionJoint(8.2, -5.6, 3.2);
+  wait(1.0, seconds);
+  RoboticArm1.moveToPositionJoint(8.3, -5.7, 0.5);
+  wait(1.0, seconds);
+  Magnet5.pickup(Magnet5_duration);
+  RoboticArm1.moveToPositionJoint(8.2, -5.6, 3.2);
+  // go to sensor
+  RoboticArm1.moveToPositionJoint(7.4, -1.1, 2.5);
+  wait(1.0, seconds);
+  if (Optical6.color() == red) {
+    // red disk
+    RoboticArm1.moveToPositionJoint(9.25, 2.8, 2.4);
+    wait(1.0, seconds);
+    Magnet5.drop();
+  }
+  if (Optical6.color() == blue) {
+    // blue disk
+    RoboticArm1.moveToPositionJoint(8.7, 5.1, 2.4);
+    wait(1.0, seconds);
+    Magnet5.drop();
+  }
+  if (Optical6.color() == green) {
+    // green disk
+    RoboticArm1.moveToPositionJoint(6.7, 4.6, 2.4);
+    wait(1.0, seconds);
+    Magnet5.drop();
+  }
+}
+
+
+int main() {
+  // register event handlers
+  EStop.pressed(onevent_EStop_pressed_0);
+  Brain.Screen.pressed(onevent_Brain_screen_pressed_0);
+
+  wait(15, msec);
+  // post event registration
+
+  // set default print color to black
+  printf("\033[30m");
+
+  // wait for rotation sensor to fully initialize
+  wait(30, msec);
+
+  whenStarted1();
+}

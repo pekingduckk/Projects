@@ -1,0 +1,85 @@
+#include "vex.h"
+
+double Magnet5_duration = 500.0;
+float myVariable;
+
+event message1 = event();
+
+// "when started" hat block
+int whenStarted1() {
+  RoboticArm1.setMasteringValues(1705.0,1953.0,1826.0,615.0);
+  RoboticArm1.setToolTipOffset(-0.7, 0.0, -2.0);
+  Magnet5.setPower(100.0);
+  Magnet5_duration = 1000;
+  return 0;
+}
+
+// "when Brain screen pressed" hat block
+void onevent_Brain_screen_pressed_0() {
+  if (Brain.Screen.xPosition() > 250.0) {
+    if (Brain.Screen.yPosition() > 125.0) {
+      // Blue Box Pressed
+      RoboticArm1.moveToPositionJoint(9.7, 4.3, 1.4);
+      Magnet5.drop();
+    }
+    else {
+      // Green Box Pressed
+      RoboticArm1.moveToPositionJoint(7.6, 4.5, 1.4);
+      Magnet5.drop();
+    }
+  }
+  else {
+    if (Brain.Screen.yPosition() > 125.0) {
+      // Red Box Pressed
+      RoboticArm1.moveToPositionJoint(9.4, 1.7, 1.9);
+      Magnet5.drop();
+    }
+    else {
+      // White Box Pressed
+      RoboticArm1.moveToPositionJoint(7.7, -6.0, 3.4);
+      wait(1.0, seconds);
+      RoboticArm1.moveToPositionJoint(7.9, -6.0, 0.5);
+      wait(1.0, seconds);
+      Magnet5.pickup(Magnet5_duration);
+      RoboticArm1.moveToPositionJoint(7.7, -6.0, 3.4);
+    }
+  }
+}
+
+// "when EStop pressed" hat block
+void onevent_EStop_pressed_0() {
+  RoboticArm1.emergencyStop();
+}
+
+// "when started" hat block
+int whenStarted2() {
+  Brain.Screen.setPenColor(white);
+  Brain.Screen.setFillColor(white);
+  Brain.Screen.drawRectangle(30, 10, 200, 100);
+  Brain.Screen.setFillColor(red);
+  Brain.Screen.drawRectangle(30, 125, 200, 100);
+  Brain.Screen.setFillColor(green);
+  Brain.Screen.drawRectangle(250, 10, 200, 100);
+  Brain.Screen.setFillColor(blue);
+  Brain.Screen.drawRectangle(250, 125, 200, 100);
+  return 0;
+}
+
+
+int main() {
+  // register event handlers
+  Brain.Screen.pressed(onevent_Brain_screen_pressed_0);
+  EStop.pressed(onevent_EStop_pressed_0);
+
+  wait(15, msec);
+  // post event registration
+
+  // set default print color to black
+  printf("\033[30m");
+
+  // wait for rotation sensor to fully initialize
+  wait(30, msec);
+
+  vex::task ws1(whenStarted2);
+  whenStarted1();
+}

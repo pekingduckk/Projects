@@ -1,0 +1,137 @@
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/*    Module:       main.cpp                                                  */
+/*    Author:       VEX                                                       */
+/*    Created:      Tue Mar 16 2021                                           */
+/*    Description:  Arm Manual Movement                                       */
+/*                                                                            */
+/*    This example will continuously display the current                      */
+/*    position of the arm on the V5 Brain's screen and allow you              */
+/*    to manually move the arm around                                         */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// RoboticArm1          RoboticArm    1, 2, 3, 4, 1, 2, 3, 4
+// EStop                bumper        E              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+
+
+#include "vex.h"
+
+
+using namespace vex;
+
+
+int Brain_precision = 0, Console_precision = 0;
+
+
+float myVariable, startX, startY, startZ, Index;
+
+
+float Triangles[10][3];
+
+
+event message1 = event();
+
+
+// "when started" hat block
+int whenStarted1() {
+ RoboticArm1.setMasteringValues(1602,1918,2075,402);
+ RoboticArm1.setToolTipOffset(1.05, 0.0, -1.0);
+ Triangles[0][0] = 6.0;
+ Triangles[0][1] = -4.0;
+ Triangles[0][2] = 3.0;
+ Triangles[1][0] = 6.0;
+ Triangles[1][1] = -4.0;
+ Triangles[1][2] = 1.5;
+ Triangles[2][0] = 8.7;
+ Triangles[2][1] = -6.0;
+ Triangles[2][2] = 1.5;
+ Triangles[3][0] = 8.8;
+ Triangles[3][1] = -2.4;
+ Triangles[3][2] = 1.5;
+ Triangles[4][0] = 6.0;
+ Triangles[4][1] = -4.0;
+ Triangles[4][2] = 1.6;
+ Triangles[5][0] = 6.6;
+ Triangles[5][1] = 3.5;
+ Triangles[5][2] = 3.0;
+ Triangles[6][0] = 6.6;
+ Triangles[6][1] = 3.5;
+ Triangles[6][2] = 1.5;
+ Triangles[7][0] = 9.0;
+ Triangles[7][1] = 1.5;
+ Triangles[7][2] = 1.5;
+ Triangles[8][0] = 9.0;
+ Triangles[8][1] = 5.0;
+ Triangles[8][2] = 1.5;
+ Triangles[9][0] = 6.6;
+ Triangles[9][1] = 3.5;
+ Triangles[9][2] = 1.5;Index = 1.0;
+ repeat(10) {
+   RoboticArm1.moveToPositionLinear(Triangles[static_cast<int>(Index) - 1][static_cast<int>(1) - 1], Triangles[static_cast<int>(Index) - 1][static_cast<int>(2) - 1], Triangles[static_cast<int>(Index) - 1][static_cast<int>(3) - 1]);
+   Index = Index + 1.0;
+   wait(5, msec);
+ }
+ return 0;
+}
+
+
+// "when EStop pressed" hat block
+void onevent_EStop_pressed_0() {
+ RoboticArm1.emergencyStop();
+}
+
+
+// "when started" hat block
+int whenStarted2() {
+ Brain.Screen.setFont(mono60);
+ Brain_precision = 3;
+ while (true) {
+   Brain.Screen.clearScreen();
+   // Display the X position on row 1
+   Brain.Screen.setCursor(1, 1);
+   Brain.Screen.print("X: ");
+   Brain.Screen.print(static_cast<float>(RoboticArm1.getAxisPosition(xaxis)));
+   Brain.Screen.newLine();
+   // Display the Y position on row 2
+   Brain.Screen.print("Y: ");
+   Brain.Screen.print(static_cast<float>(RoboticArm1.getAxisPosition(yaxis)));
+   Brain.Screen.newLine();
+   // Display the Z position on row 3
+   Brain.Screen.print("Z: ");
+   Brain.Screen.print(static_cast<float>(RoboticArm1.getAxisPosition(zaxis)));
+   wait(0.2, seconds);
+ wait(5, msec);
+ }
+ return 0;
+}
+
+
+
+
+int main() {
+ // register event handlers
+ EStop.pressed(onevent_EStop_pressed_0);
+
+
+ wait(15, msec);
+ // post event registration
+
+
+ // set default print color to black
+ printf("\033[30m");
+
+
+ // wait for rotation sensor to fully initialize
+ wait(30, msec);
+
+
+ vex::task ws1(whenStarted2);
+ whenStarted1();
+}
+
